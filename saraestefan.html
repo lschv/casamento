@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Sara & Sthefan · 28 de agosto de 2027</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    /* Paleta: jardim secreto ao amanhecer */
+    --creme: #F6F3EA;        /* luz difusa, fundo */
+    --creme-fundo: #EFEBDD;  /* variação de fundo */
+    --folha-clara: #A9B79A;  /* folhagem suave */
+    --folha: #6E8062;        /* verde principal */
+    --folha-escura: #47543D; /* sombra do jardim */
+    --musgo: #3A4432;        /* texto profundo */
+    --dourado: #B79A5E;      /* dourado antigo, acento */
+    --dourado-claro: #D6C398;
+    --branco-flor: #FDFCF8;
+
+    --serif: 'Cormorant Garamond', Georgia, serif;
+    --sans: 'Jost', system-ui, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--sans);
+    background: var(--creme);
+    color: var(--musgo);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+
+  /* ---------- Utilidades ---------- */
+  .container { width: 90%; max-width: 1080px; margin: 0 auto; }
+  .secao { padding: clamp(4rem, 9vw, 8rem) 0; position: relative; }
+
+  .eyebrow {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--dourado);
+    display: block;
+    margin-bottom: 1.2rem;
+  }
+
+  .titulo-secao {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    line-height: 1.1;
+    color: var(--folha-escura);
+    margin-bottom: 1.5rem;
+  }
+
+  .titulo-secao em { font-style: italic; color: var(--folha); }
+
+  p.corpo { font-size: 1.05rem; max-width: 40rem; color: var(--musgo); }
+
+  /* ---------- Folhagem SVG assinatura ---------- */
+  .folhagem {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.5;
+    z-index: 0;
+  }
+
+  /* ---------- Hero / Capa ---------- */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    background:
+      radial-gradient(ellipse at 50% 30%, var(--branco-flor) 0%, var(--creme) 55%, var(--creme-fundo) 100%);
+    padding: 2rem;
+    overflow: hidden;
+  }
+
+  .hero-conteudo {
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+    animation: surgir 1.6s ease forwards 0.3s;
+  }
+
+  @keyframes surgir {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero .conector {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+    color: var(--dourado);
+    display: block;
+    margin: 0.4rem 0;
+  }
+
+  .hero .nomes {
+    font-family: var(--serif);
+    font-weight: 500;
+    font-size: clamp(3.2rem, 11vw, 7rem);
+    line-height: 0.95;
+    color: var(--folha-escura);
+    letter-spacing: -0.01em;
+  }
+
+  .hero .subtitulo {
+    font-family: var(--sans);
+    font-weight: 300;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    color: var(--folha);
+    margin-top: 2rem;
+  }
+
+  .hero .data-capa {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    color: var(--musgo);
+    margin-top: 0.6rem;
+    letter-spacing: 0.05em;
+  }
+
+  .selo-iniciais {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.5rem;
+    color: var(--dourado);
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .scroll-dica {
+    position: absolute;
+    bottom: 2.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--folha);
+    opacity: 0.7;
+    z-index: 2;
+    animation: flutuar 2.4s ease-in-out infinite;
+  }
+
+  @keyframes flutuar {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* ---------- Contagem regressiva ---------- */
+  .contagem {
+    background: var(--folha-escura);
+    color: var(--branco-flor);
+    text-align: center;
+  }
+  .contagem .titulo-secao { color: var(--branco-flor); }
+  .contagem .eyebrow { color: var(--dourado-claro); }
+
+  .relogio {
+    display: flex;
+    justify-content: center;
+    gap: clamp(1.2rem, 5vw, 3.5rem);
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .relogio .bloco { min-width: 70px; }
+  .relogio .num {
+    font-family: var(--serif);
+    font-size: clamp(2.6rem, 7vw, 4.2rem);
+    font-weight: 500;
+    line-height: 1;
+    color: var(--branco-flor);
+  }
+  .relogio .rot {
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--folha-clara);
+    margin-top: 0.6rem;
+  }
+
+  /* ---------- Blocos de conteúdo ---------- */
+  .bloco-texto { position: relative; z-index: 1; }
+
+  .cartoes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+  .cartao {
+    background: var(--branco-flor);
+    border: 1px solid rgba(110, 128, 98, 0.18);
+    border-radius: 2px;
+    padding: 2.2rem;
+    position: relative;
+  }
+  .cartao h3 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 1.5rem;
+    color: var(--folha);
+    margin-bottom: 0.8rem;
+  }
+  .cartao p { font-size: 0.98rem; }
+
+  /* Trajes / cores */
+  .paleta-cores { display: flex; gap: 0.8rem; margin-top: 1.2rem; flex-wrap: wrap; }
+  .amostra {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 2px solid var(--branco-flor);
+    box-shadow: 0 0 0 1px rgba(58,68,50,0.15);
+  }
+  .amostra-legenda { font-size: 0.78rem; color: var(--folha); margin-top: 0.5rem; letter-spacing: 0.05em; }
+
+  /* Boas práticas / info importante */
+  .info-lista { list-style: none; margin-top: 2.5rem; }
+  .info-lista li {
+    display: flex;
+    gap: 1.2rem;
+    padding: 1.4rem 0;
+    border-bottom: 1px solid rgba(110,128,98,0.15);
+    align-items: flex-start;
+  }
+  .info-lista li:last-child { border-bottom: none; }
+  .info-num {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.6rem;
+    color: var(--dourado);
+    line-height: 1;
+    min-width: 2rem;
+  }
+  .info-txt h4 { font-family: var(--serif); font-size: 1.25rem; color: var(--folha-escura); font-weight: 600; margin-bottom: 0.2rem; }
+  .info-txt p { font-size: 0.96rem; }
+
+  /* ---------- Local / mapa ---------- */
+  .local-wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: center; margin-top: 3rem; }
+  @media (max-width: 820px) { .local-wrap { grid-template-columns: 1fr; } }
+  .mapa-moldura {
+    border: 1px solid rgba(110,128,98,0.25);
+    padding: 8px;
+    background: var(--branco-flor);
+    border-radius: 2px;
+  }
+  .mapa-moldura iframe { width: 100%; height: 340px; border: 0; display: block; filter: saturate(0.9) contrast(0.95); }
+
+  /* ---------- Botão presente / iCasei ---------- */
+  .btn {
+    display: inline-block;
+    font-family: var(--sans);
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-size: 0.78rem;
+    padding: 1.1rem 2.6rem;
+    border: 1px solid var(--folha);
+    color: var(--folha-escura);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border-radius: 1px;
+  }
+  .btn:hover { background: var(--folha); color: var(--branco-flor); }
+  .btn-preenchido { background: var(--folha); color: var(--branco-flor); }
+  .btn-preenchido:hover { background: var(--folha-escura); border-color: var(--folha-escura); }
+
+  .presentes { text-align: center; background: var(--creme-fundo); }
+  .presentes .corpo { margin: 0 auto 2.5rem; }
+
+  /* ---------- Formulários ---------- */
+  .form-wrap { max-width: 560px; margin: 3rem auto 0; }
+  .campo { margin-bottom: 1.5rem; }
+  .campo label {
+    display: block;
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--folha);
+    margin-bottom: 0.6rem;
+  }
+  .campo input, .campo textarea, .campo select {
+    width: 100%;
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 1rem;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(110,128,98,0.3);
+    background: var(--branco-flor);
+    color: var(--musgo);
+    border-radius: 2px;
+    transition: border-color 0.3s;
+  }
+  .campo input:focus, .campo textarea:focus, .campo select:focus {
+    outline: none;
+    border-color: var(--folha);
+  }
+  .campo textarea { resize: vertical; min-height: 100px; }
+
+  .radio-linha { display: flex; gap: 2rem; }
+  .radio-op { display: flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+  .radio-op input { width: auto; }
+  .radio-op span { font-size: 1rem; letter-spacing: 0; text-transform: none; color: var(--musgo); }
+
+  .form-msg {
+    text-align: center;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    color: var(--folha);
+    display: none;
+  }
+  .form-msg.visivel { display: block; animation: surgir 0.6s ease; }
+
+  .rsvp { background: var(--creme); }
+
+  /* ---------- Mural de recados ---------- */
+  .recados { background: var(--folha-escura); color: var(--branco-flor); }
+  .recados .titulo-secao { color: var(--branco-flor); }
+  .recados .eyebrow { color: var(--dourado-claro); }
+  .recados .campo label { color: var(--folha-clara); }
+  .recados .campo input, .recados .campo textarea {
+    background: rgba(253,252,248,0.06);
+    border-color: rgba(214,195,152,0.3);
+    color: var(--branco-flor);
+  }
+  .recados .campo input::placeholder, .recados .campo textarea::placeholder { color: rgba(253,252,248,0.4); }
+  .recados .btn { border-color: var(--dourado-claro); color: var(--dourado-claro); }
+  .recados .btn:hover { background: var(--dourado); color: var(--folha-escura); border-color: var(--dourado); }
+
+  .mural { margin-top: 3.5rem; column-count: 2; column-gap: 1.5rem; }
+  @media (max-width: 680px) { .mural { column-count: 1; } }
+  .recado-cartao {
+    background: rgba(253,252,248,0.05);
+    border: 1px solid rgba(214,195,152,0.2);
+    border-radius: 2px;
+    padding: 1.6rem 1.8rem;
+    margin-bottom: 1.5rem;
+    break-inside: avoid;
+    position: relative;
+  }
+  .recado-cartao .aspas {
+    font-family: var(--serif);
+    font-size: 3rem;
+    color: var(--dourado);
+    line-height: 0.5;
+    opacity: 0.5;
+  }
+  .recado-cartao .texto {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.15rem;
+    line-height: 1.5;
+    color: var(--branco-flor);
+    margin: 0.5rem 0 1rem;
+  }
+  .recado-cartao .autor {
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--dourado-claro);
+  }
+  .recado-cartao .ocultar {
+    position: absolute;
+    top: 0.8rem; right: 0.9rem;
+    background: none; border: none;
+    color: rgba(253,252,248,0.35);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .recado-cartao .ocultar:hover { color: var(--dourado-claro); }
+
+  /* ---------- Rodapé ---------- */
+  .rodape {
+    background: var(--musgo);
+    color: var(--folha-clara);
+    text-align: center;
+    padding: 3.5rem 1rem;
+  }
+  .rodape .nomes-rodape {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 2rem;
+    color: var(--branco-flor);
+    margin-bottom: 0.5rem;
+  }
+  .rodape .data-rodape { font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; }
+
+  /* ---------- Navegação ---------- */
+  nav.topo {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(246,243,234,0.9);
+    backdrop-filter: blur(8px);
+    z-index: 50;
+    padding: 1rem 0;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+    border-bottom: 1px solid rgba(110,128,98,0.15);
+  }
+  nav.topo.visivel { transform: translateY(0); }
+  nav.topo .container { display: flex; justify-content: center; gap: clamp(1rem, 4vw, 2.5rem); flex-wrap: wrap; }
+  nav.topo a {
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--folha-escura);
+    text-decoration: none;
+    transition: color 0.3s;
+  }
+  nav.topo a:hover { color: var(--dourado); }
+
+  .revelar { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s ease; }
+  .revelar.dentro { opacity: 1; transform: translateY(0); }
+</style>
+</head>
+<body>
+
+<nav class="topo" id="navTopo">
+  <div class="container">
+    <a href="#historia">O casal</a>
+    <a href="#local">Cerimônia</a>
+    <a href="#trajes">Trajes</a>
+    <a href="#info">Informações</a>
+    <a href="#presentes">Presentes</a>
+    <a href="#rsvp">Confirmar</a>
+    <a href="#recados">Recados</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <!-- Folhagem assinatura: topo esquerdo -->
+  <svg class="folhagem" style="top:-20px;left:-30px;width:280px" viewBox="0 0 200 200" fill="none">
+    <path d="M100 190 C100 120 60 80 20 60 C60 90 90 130 100 190Z" fill="#A9B79A"/>
+    <path d="M100 190 C100 130 130 90 175 70 C135 95 108 135 100 190Z" fill="#6E8062"/>
+    <path d="M100 195 C100 140 85 100 55 75 C88 105 98 145 100 195Z" fill="#47543D" opacity="0.6"/>
+  </svg>
+  <!-- Folhagem assinatura: canto inferior direito -->
+  <svg class="folhagem" style="bottom:-10px;right:-20px;width:240px;transform:scaleX(-1)" viewBox="0 0 200 200" fill="none">
+    <path d="M100 190 C100 120 60 80 20 60 C60 90 90 130 100 190Z" fill="#A9B79A"/>
+    <path d="M100 190 C100 130 130 90 175 70 C135 95 108 135 100 190Z" fill="#6E8062"/>
+  </svg>
+
+  <div class="hero-conteudo">
+    <span class="selo-iniciais">S &nbsp;·&nbsp; S</span>
+    <h1 class="nomes">Sara<span class="conector">&amp;</span>Sthefan</h1>
+    <p class="subtitulo">vamos nos casar</p>
+    <p class="data-capa">28 de agosto de 2027</p>
+  </div>
+  <span class="scroll-dica">role para descobrir</span>
+</header>
+
+<!-- ============ CONTAGEM ============ -->
+<section class="secao contagem">
+  <div class="container">
+    <span class="eyebrow">a contagem começou</span>
+    <h2 class="titulo-secao">Faltam poucos <em>dias</em></h2>
+    <div class="relogio" id="relogio">
+      <div class="bloco"><div class="num" id="dias">—</div><div class="rot">dias</div></div>
+      <div class="bloco"><div class="num" id="horas">—</div><div class="rot">horas</div></div>
+      <div class="bloco"><div class="num" id="minutos">—</div><div class="rot">minutos</div></div>
+      <div class="bloco"><div class="num" id="segundos">—</div><div class="rot">segundos</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HISTÓRIA / O CASAL ============ -->
+<section class="secao" id="historia">
+  <svg class="folhagem" style="top:40px;right:-40px;width:180px;opacity:0.35" viewBox="0 0 200 200">
+    <path d="M100 190 C100 130 130 90 175 70 C135 95 108 135 100 190Z" fill="#A9B79A"/>
+  </svg>
+  <div class="container bloco-texto revelar">
+    <span class="eyebrow">bem-vindos ao nosso jardim</span>
+    <h2 class="titulo-secao">Uma história que<br><em>floresceu com o tempo</em></h2>
+    <p class="corpo">
+      Cada grande amor começa como uma semente — pequena, silenciosa, cheia de promessa.
+      É com o coração transbordando que convidamos você a caminhar conosco por este jardim
+      que cultivamos juntos, e a celebrar o dia em que diremos "sim" diante de quem amamos.
+    </p>
+    <p class="corpo" style="margin-top:1.5rem">
+      Sua presença é o presente mais bonito que poderíamos receber. Explore as próximas seções
+      para saber tudo sobre o grande dia.
+    </p>
+  </div>
+</section>
+
+<!-- ============ LOCAL / CERIMÔNIA ============ -->
+<section class="secao rsvp" id="local" style="background:var(--creme-fundo)">
+  <div class="container revelar">
+    <span class="eyebrow">onde tudo acontece</span>
+    <h2 class="titulo-secao">A cerimônia &amp; <em>a festa</em></h2>
+    <div class="local-wrap">
+      <div>
+        <h3 style="font-family:var(--serif);font-size:1.8rem;color:var(--folha);margin-bottom:0.6rem">Espaço Jardim das Acácias</h3>
+        <p class="corpo" style="margin-bottom:1rem">
+          Um refúgio verde à beira da cidade, cercado de árvores centenárias e luz dourada
+          ao entardecer. Cerimônia e recepção no mesmo local.
+        </p>
+        <p style="font-size:0.95rem;color:var(--musgo);margin-bottom:0.3rem"><strong style="font-weight:500">Endereço:</strong> Estrada das Acácias, 1200 — Rio de Janeiro, RJ</p>
+        <p style="font-size:0.95rem;color:var(--musgo);margin-bottom:1.5rem"><strong style="font-weight:500">Horário:</strong> Cerimônia às 16h · Recepção a seguir</p>
+        <a class="btn" href="https://maps.google.com" target="_blank" rel="noopener">Abrir no mapa</a>
+      </div>
+      <div class="mapa-moldura">
+        <iframe
+          src="https://www.google.com/maps?q=Rio+de+Janeiro&output=embed"
+          loading="lazy" title="Mapa do local"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRAJES / CORES ============ -->
+<section class="secao" id="trajes">
+  <div class="container revelar">
+    <span class="eyebrow">para combinar com o jardim</span>
+    <h2 class="titulo-secao">Trajes &amp; <em>paleta</em></h2>
+    <div class="cartoes">
+      <div class="cartao">
+        <h3>Convidados</h3>
+        <p>Traje social completo. Sinta-se à vontade para trazer cores suaves que conversem com o verde do jardim.</p>
+      </div>
+      <div class="cartao">
+        <h3>Padrinhos &amp; Madrinhas</h3>
+        <p>Pedimos que sigam a paleta abaixo, escolhida com carinho para harmonizar com a decoração.</p>
+        <div class="paleta-cores">
+          <div>
+            <div class="amostra" style="background:#6E8062"></div>
+            <div class="amostra-legenda">Verde sálvia</div>
+          </div>
+          <div>
+            <div class="amostra" style="background:#47543D"></div>
+            <div class="amostra-legenda">Verde musgo</div>
+          </div>
+          <div>
+            <div class="amostra" style="background:#B79A5E"></div>
+            <div class="amostra-legenda">Dourado</div>
+          </div>
+          <div>
+            <div class="amostra" style="background:#EFEBDD"></div>
+            <div class="amostra-legenda">Areia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INFORMAÇÕES IMPORTANTES ============ -->
+<section class="secao" id="info" style="background:var(--folha-escura);color:var(--branco-flor)">
+  <div class="container revelar">
+    <span class="eyebrow" style="color:var(--dourado-claro)">antes de vir</span>
+    <h2 class="titulo-secao" style="color:var(--branco-flor)">Informações <em style="color:var(--dourado-claro)">importantes</em></h2>
+    <ul class="info-lista">
+      <li>
+        <span class="info-num">i</span>
+        <div class="info-txt">
+          <h4>Confirme sua presença</h4>
+          <p style="color:var(--folha-clara)">Pedimos que confirme até 30 dias antes do casamento, para organizarmos tudo com carinho.</p>
+        </div>
+      </li>
+      <li>
+        <span class="info-num">ii</span>
+        <div class="info-txt">
+          <h4>Chegue com antecedência</h4>
+          <p style="color:var(--folha-clara)">A cerimônia começa pontualmente às 16h. Recomendamos chegar 30 minutos antes.</p>
+        </div>
+      </li>
+      <li>
+        <span class="info-num">iii</span>
+        <div class="info-txt">
+          <h4>Estacionamento</h4>
+          <p style="color:var(--folha-clara)">O local conta com estacionamento gratuito. Também é fácil chegar por aplicativo de transporte.</p>
+        </div>
+      </li>
+      <li>
+        <span class="info-num">iv</span>
+        <div class="info-txt">
+          <h4>Sobre as crianças</h4>
+          <p style="color:var(--folha-clara)">Amamos os pequenos, mas escolhemos uma celebração só para adultos. Contamos com a compreensão de vocês.</p>
+        </div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============ PRESENTES / iCASEI ============ -->
+<section class="secao presentes" id="presentes">
+  <svg class="folhagem" style="top:20px;left:-30px;width:160px;opacity:0.3" viewBox="0 0 200 200">
+    <path d="M100 190 C100 130 130 90 175 70 C135 95 108 135 100 190Z" fill="#6E8062"/>
+  </svg>
+  <div class="container revelar">
+    <span class="eyebrow">se quiser nos presentear</span>
+    <h2 class="titulo-secao">Lista de <em>presentes</em></h2>
+    <p class="corpo">
+      Sua presença já é tudo para nós. Mas se desejar contribuir com o início da nossa
+      nova vida, preparamos uma lista com muito carinho.
+    </p>
+    <a class="btn btn-preenchido" href="https://icasei.com.br" target="_blank" rel="noopener">Ver lista no iCasei</a>
+  </div>
+</section>
+
+<!-- ============ RSVP ============ -->
+<section class="secao rsvp" id="rsvp">
+  <div class="container revelar">
+    <div style="text-align:center">
+      <span class="eyebrow">contamos com você</span>
+      <h2 class="titulo-secao">Confirme sua <em>presença</em></h2>
+    </div>
+    <form class="form-wrap" id="formRsvp">
+      <div class="campo">
+        <label for="r-nome">Nome completo</label>
+        <input type="text" id="r-nome" name="nome" required placeholder="Seu nome" />
+      </div>
+      <div class="campo">
+        <label>Você irá ao evento?</label>
+        <div class="radio-linha">
+          <label class="radio-op"><input type="radio" name="presenca" value="Sim" required /><span>Sim, estarei lá</span></label>
+          <label class="radio-op"><input type="radio" name="presenca" value="Não" /><span>Não poderei ir</span></label>
+        </div>
+      </div>
+      <div class="campo">
+        <label for="r-adultos">Quantidade de adultos</label>
+        <select id="r-adultos" name="adultos">
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="r-email">E-mail</label>
+        <input type="email" id="r-email" name="email" required placeholder="seu@email.com" />
+      </div>
+      <div class="campo">
+        <label for="r-telefone">Telefone</label>
+        <input type="tel" id="r-telefone" name="telefone" required placeholder="(21) 99999-9999" />
+      </div>
+      <div style="text-align:center">
+        <button type="submit" class="btn btn-preenchido">Confirmar presença</button>
+      </div>
+      <div class="form-msg" id="msgRsvp">Sua confirmação foi registrada com carinho. Até lá! ✦</div>
+    </form>
+  </div>
+</section>
+
+<!-- ============ RECADOS ============ -->
+<section class="secao recados" id="recados">
+  <div class="container revelar">
+    <div style="text-align:center">
+      <span class="eyebrow">deixe uma mensagem</span>
+      <h2 class="titulo-secao">Mural de <em>recados</em></h2>
+    </div>
+    <form class="form-wrap" id="formRecado">
+      <div class="campo">
+        <label for="rec-nome">Seu nome</label>
+        <input type="text" id="rec-nome" name="nome" required placeholder="Como você quer assinar" />
+      </div>
+      <div class="campo">
+        <label for="rec-msg">Seu recado</label>
+        <textarea id="rec-msg" name="msg" required placeholder="Escreva uma mensagem para os noivos..."></textarea>
+      </div>
+      <div style="text-align:center">
+        <button type="submit" class="btn">Publicar recado</button>
+      </div>
+    </form>
+
+    <p id="muralCarregando" style="text-align:center;color:var(--folha-clara);font-style:italic;font-family:var(--serif);font-size:1.1rem;margin-top:2rem">Carregando os recados do jardim...</p>
+    <div class="mural" id="mural"></div>
+  </div>
+</section>
+
+<!-- ============ RODAPÉ ============ -->
+<footer class="rodape">
+  <p class="nomes-rodape">Sara &amp; Sthefan</p>
+  <p class="data-rodape">28 · 08 · 2027</p>
+</footer>
+
+<script>
+  // ----- Contagem regressiva -----
+  const dataCasamento = new Date('2027-08-28T16:00:00').getTime();
+  function atualizarContagem() {
+    const agora = Date.now();
+    let dif = dataCasamento - agora;
+    if (dif < 0) dif = 0;
+    const d = Math.floor(dif / 86400000);
+    const h = Math.floor((dif % 86400000) / 3600000);
+    const m = Math.floor((dif % 3600000) / 60000);
+    const s = Math.floor((dif % 60000) / 1000);
+    document.getElementById('dias').textContent = d;
+    document.getElementById('horas').textContent = String(h).padStart(2,'0');
+    document.getElementById('minutos').textContent = String(m).padStart(2,'0');
+    document.getElementById('segundos').textContent = String(s).padStart(2,'0');
+  }
+  atualizarContagem();
+  setInterval(atualizarContagem, 1000);
+
+  // ----- Navegação que aparece ao rolar -----
+  const nav = document.getElementById('navTopo');
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > window.innerHeight * 0.8) nav.classList.add('visivel');
+    else nav.classList.remove('visivel');
+  });
+
+  // ----- Revelar seções ao rolar -----
+  const obs = new IntersectionObserver((entradas) => {
+    entradas.forEach(e => { if (e.isIntersecting) e.target.classList.add('dentro'); });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.revelar').forEach(el => obs.observe(el));
+
+  /* ============================================================
+     CONEXÃO COM O SUPABASE
+     ------------------------------------------------------------
+     👉 COLE AQUI AS DUAS CHAVINHAS QUE O SUPABASE VAI TE DAR.
+        Troque o texto entre aspas, mantendo as aspas.
+     ============================================================ */
+  const SUPABASE_URL = 'COLE_AQUI_A_URL_DO_PROJETO';
+  const SUPABASE_CHAVE = 'COLE_AQUI_A_CHAVE_ANON_PUBLIC';
+
+  /* ------------------------------------------------------------
+     MODO DONA DO SITE (moderação dos recados)
+     Pra ver os botões "ocultar" e poder esconder recados,
+     sua amiga acessa o site adicionando  #admin  no final do
+     endereço. Ex: sara-e-sthefan.netlify.app/#admin
+     Os convidados normais nunca veem esses botões.
+     ------------------------------------------------------------ */
+  const MODO_ADMIN = window.location.hash === '#admin';
+
+  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_CHAVE);
+
+  // ----- RSVP: salva a confirmação no Supabase -----
+  document.getElementById('formRsvp').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const botao = e.target.querySelector('button[type="submit"]');
+    botao.disabled = true;
+    botao.textContent = 'Enviando...';
+    const dados = Object.fromEntries(new FormData(e.target));
+
+    const { error } = await sb.from('confirmacoes').insert({
+      nome: dados.nome,
+      presenca: dados.presenca,
+      adultos: parseInt(dados.adultos, 10),
+      email: dados.email,
+      telefone: dados.telefone
+    });
+
+    if (error) {
+      botao.disabled = false;
+      botao.textContent = 'Confirmar presença';
+      alert('Ops, não conseguimos registrar sua confirmação agora. Tente novamente em instantes.');
+      console.error(error);
+      return;
+    }
+
+    document.getElementById('msgRsvp').classList.add('visivel');
+    e.target.reset();
+    botao.textContent = 'Confirmado ✦';
+  });
+
+  // ----- Recados: salva o recado e mostra no mural -----
+  document.getElementById('formRecado').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const botao = e.target.querySelector('button[type="submit"]');
+    botao.disabled = true;
+    botao.textContent = 'Publicando...';
+    const dados = Object.fromEntries(new FormData(e.target));
+
+    const { data, error } = await sb.from('recados')
+      .insert({ nome: dados.nome, mensagem: dados.msg, visivel: true })
+      .select();
+
+    botao.disabled = false;
+    botao.textContent = 'Publicar recado';
+
+    if (error) {
+      alert('Ops, não conseguimos publicar seu recado agora. Tente novamente em instantes.');
+      console.error(error);
+      return;
+    }
+
+    // Mostra o recado recém-criado no topo do mural
+    if (data && data[0]) adicionarRecadoNoMural(data[0], true);
+    e.target.reset();
+  });
+
+  // ----- Monta um cartão de recado na tela -----
+  function adicionarRecadoNoMural(recado, noTopo) {
+    const cartao = document.createElement('div');
+    cartao.className = 'recado-cartao';
+    cartao.dataset.id = recado.id;
+
+    const botaoOcultar = MODO_ADMIN
+      ? '<button class="ocultar" title="Ocultar este recado">ocultar</button>'
+      : '';
+
+    cartao.innerHTML = `
+      ${botaoOcultar}
+      <div class="aspas">"</div>
+      <p class="texto"></p>
+      <p class="autor"></p>`;
+    cartao.querySelector('.texto').textContent = recado.mensagem;
+    cartao.querySelector('.autor').textContent = '— ' + recado.nome;
+
+    const mural = document.getElementById('mural');
+    if (noTopo) mural.prepend(cartao);
+    else mural.appendChild(cartao);
+  }
+
+  // ----- Busca os recados guardados e mostra no mural -----
+  async function carregarRecados() {
+    const aviso = document.getElementById('muralCarregando');
+
+    // Admin vê todos; convidado vê só os visíveis
+    let consulta = sb.from('recados').select('*').order('criado_em', { ascending: false });
+    if (!MODO_ADMIN) consulta = consulta.eq('visivel', true);
+
+    const { data, error } = await consulta;
+
+    if (error) {
+      aviso.textContent = 'Não foi possível carregar os recados agora.';
+      console.error(error);
+      return;
+    }
+
+    aviso.style.display = 'none';
+    document.getElementById('mural').innerHTML = '';
+
+    if (!data || data.length === 0) {
+      aviso.style.display = 'block';
+      aviso.textContent = 'Seja o primeiro a deixar um recado no jardim ✦';
+      return;
+    }
+
+    data.forEach(recado => adicionarRecadoNoMural(recado, false));
+  }
+
+  // ----- Ocultar recado (só no modo admin) -----
+  document.getElementById('mural').addEventListener('click', async (e) => {
+    if (!e.target.classList.contains('ocultar')) return;
+    const cartao = e.target.closest('.recado-cartao');
+    const id = cartao.dataset.id;
+
+    const { error } = await sb.from('recados').update({ visivel: false }).eq('id', id);
+    if (error) { alert('Não consegui ocultar agora, tente de novo.'); console.error(error); return; }
+
+    cartao.style.opacity = '0.4';
+    e.target.textContent = 'ocultado';
+  });
+
+  // Carrega os recados assim que a página abre
+  carregarRecados();
+</script>
+</body>
+</html>
