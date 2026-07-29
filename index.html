@@ -10,16 +10,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
   :root {
-    /* Paleta: jardim secreto ao amanhecer */
-    --creme: #F6F3EA;        /* luz difusa, fundo */
-    --creme-fundo: #EFEBDD;  /* variação de fundo */
-    --folha-clara: #A9B79A;  /* folhagem suave */
-    --folha: #6E8062;        /* verde principal */
-    --folha-escura: #47543D; /* sombra do jardim */
-    --musgo: #3A4432;        /* texto profundo */
-    --dourado: #B79A5E;      /* dourado antigo, acento */
-    --dourado-claro: #D6C398;
-    --branco-flor: #FDFCF8;
+    /* Paleta: copo-de-leite — branco, verde e preto, minimalista */
+    --creme: #FFFFFF;        /* branco puro, fundo principal */
+    --creme-fundo: #F4F6F2;  /* branco levemente esverdeado */
+    --folha-clara: #B8C9AD;  /* verde suave, claro */
+    --folha: #5B7355;        /* verde principal (folha do copo-de-leite) */
+    --folha-escura: #37432F; /* verde profundo */
+    --musgo: #1A1A1A;        /* preto suave, texto */
+    --dourado: #5B7355;      /* acento agora é o verde (no lugar do dourado) */
+    --dourado-claro: #B8C9AD;
+    --branco-flor: #FFFFFF;  /* branco copo-de-leite */
 
     --serif: 'Cormorant Garamond', Georgia, serif;
     --sans: 'Jost', system-ui, sans-serif;
@@ -142,13 +142,26 @@
     letter-spacing: 0.05em;
   }
 
-  .selo-iniciais {
+  /* Monograma S + S com copo-de-leite */
+  .monograma {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+    color: var(--folha);
+  }
+  .mono-letra {
     font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.5rem;
-    color: var(--dourado);
-    margin-bottom: 2.5rem;
-    letter-spacing: 0.1em;
+    font-weight: 500;
+    font-size: clamp(3rem, 9vw, 5rem);
+    line-height: 1;
+    color: var(--folha-escura);
+  }
+  .copo-de-leite {
+    width: clamp(38px, 9vw, 56px);
+    height: auto;
+    color: var(--folha);
   }
 
   .scroll-dica {
@@ -337,7 +350,8 @@
     display: none;
   }
   .form-msg.visivel { display: block; animation: surgir 0.6s ease; }
-/* Modal: aviso centralizado com fundo escurecido */
+
+  /* Modal: aviso centralizado com fundo escurecido */
   .modal-fundo {
     position: fixed;
     inset: 0;
@@ -353,6 +367,7 @@
     transition: opacity 0.4s ease, visibility 0.4s ease;
   }
   .modal-fundo.aberto { opacity: 1; visibility: visible; }
+
   .modal-caixa {
     background: var(--branco-flor);
     border: 1px solid rgba(183, 154, 94, 0.4);
@@ -367,6 +382,7 @@
     transition: transform 0.4s ease;
   }
   .modal-fundo.aberto .modal-caixa { transform: translateY(0) scale(1); }
+
   .modal-fechar {
     position: absolute;
     top: 1rem;
@@ -380,6 +396,7 @@
     transition: color 0.3s;
   }
   .modal-fechar:hover { color: var(--folha-escura); }
+
   .modal-selo {
     display: block;
     font-size: 2rem;
@@ -417,6 +434,7 @@
     font-family: var(--sans);
   }
 
+  .rsvp { background: var(--creme); }
 
   /* ---------- Mural de recados ---------- */
   .recados { background: var(--folha-escura); color: var(--branco-flor); }
@@ -464,7 +482,7 @@
     text-transform: uppercase;
     color: var(--dourado-claro);
   }
-  .recado-cartao .ocultar {
+  .recado-cartao .alternar {
     position: absolute;
     top: 0.8rem; right: 0.9rem;
     background: none; border: none;
@@ -475,7 +493,20 @@
     cursor: pointer;
     transition: color 0.3s;
   }
-  .recado-cartao .ocultar:hover { color: var(--dourado-claro); }
+  .recado-cartao .alternar:hover { color: var(--dourado-claro); }
+
+  /* Recado ocultado: aparece apagadinho SÓ no modo admin */
+  .recado-cartao.recado-oculto { opacity: 0.4; }
+  .recado-cartao.recado-oculto .alternar { color: var(--dourado-claro); opacity: 1; }
+  .recado-cartao.recado-oculto::after {
+    content: 'oculto do mural';
+    position: absolute;
+    bottom: 0.8rem; right: 0.9rem;
+    font-size: 0.6rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--dourado-claro);
+  }
 
   /* ---------- Rodapé ---------- */
   .rodape {
@@ -537,23 +568,33 @@
 
 <!-- ============ HERO ============ -->
 <header class="hero">
-  <!-- Folhagem assinatura: topo esquerdo -->
-  <svg class="folhagem" style="top:-20px;left:-30px;width:280px" viewBox="0 0 200 200" fill="none">
-    <path d="M100 190 C100 120 60 80 20 60 C60 90 90 130 100 190Z" fill="#A9B79A"/>
-    <path d="M100 190 C100 130 130 90 175 70 C135 95 108 135 100 190Z" fill="#6E8062"/>
-    <path d="M100 195 C100 140 85 100 55 75 C88 105 98 145 100 195Z" fill="#47543D" opacity="0.6"/>
-  </svg>
-  <!-- Folhagem assinatura: canto inferior direito -->
-  <svg class="folhagem" style="bottom:-10px;right:-20px;width:240px;transform:scaleX(-1)" viewBox="0 0 200 200" fill="none">
-    <path d="M100 190 C100 120 60 80 20 60 C60 90 90 130 100 190Z" fill="#A9B79A"/>
-    <path d="M100 190 C100 130 130 90 175 70 C135 95 108 135 100 190Z" fill="#6E8062"/>
-  </svg>
+  <!-- Espaço reservado pra foto do casal (de fundo). Quando tiver a foto,
+       é só trocar o fundo do .hero no CSS por: background: url('foto.jpg') -->
 
   <div class="hero-conteudo">
-    <span class="selo-iniciais">S &nbsp;·&nbsp; S</span>
+    <!-- Monograma S + S com copo-de-leite, inspirado na logo oficial -->
+    <div class="monograma">
+      <span class="mono-letra">S</span>
+      <svg class="copo-de-leite" viewBox="0 0 80 130" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Espata (a "trombeta" curva do copo-de-leite) -->
+        <path d="M40 18 C28 20 24 34 30 46 C33 52 40 54 40 54 C40 54 47 52 50 46 C56 34 52 20 40 18 Z"
+              fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <!-- Espádice (o miolo central) -->
+        <path d="M40 26 L40 50" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- Caule -->
+        <path d="M40 54 L40 120" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+        <!-- Folha esquerda -->
+        <path d="M40 88 C24 84 14 92 12 104 C26 106 36 100 40 88 Z"
+              fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+        <!-- Folha direita -->
+        <path d="M40 78 C56 74 66 82 68 94 C54 96 44 90 40 78 Z"
+              fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/>
+      </svg>
+      <span class="mono-letra">S</span>
+    </div>
+
     <h1 class="nomes">Sara<span class="conector">&amp;</span>Sthefan</h1>
-    <p class="subtitulo">vamos nos casar</p>
-    <p class="data-capa">28 de agosto de 2027</p>
+    <p class="data-capa">28 · 08 · 2027</p>
   </div>
   <span class="scroll-dica">role para descobrir</span>
 </header>
@@ -574,20 +615,16 @@
 
 <!-- ============ HISTÓRIA / O CASAL ============ -->
 <section class="secao" id="historia">
-  <svg class="folhagem" style="top:40px;right:-40px;width:180px;opacity:0.35" viewBox="0 0 200 200">
-    <path d="M100 190 C100 130 130 90 175 70 C135 95 108 135 100 190Z" fill="#A9B79A"/>
-  </svg>
   <div class="container bloco-texto revelar">
-    <span class="eyebrow">bem-vindos ao nosso jardim</span>
-    <h2 class="titulo-secao">Uma história que<br><em>floresceu com o tempo</em></h2>
+    <span class="eyebrow">é com imenso carinho</span>
+    <h2 class="titulo-secao">Bem-vindos ao<br><em>nosso sonho</em></h2>
     <p class="corpo">
-      Cada grande amor começa como uma semente — pequena, silenciosa, cheia de promessa.
-      É com o coração transbordando que convidamos você a caminhar conosco por este jardim
-      que cultivamos juntos, e a celebrar o dia em que diremos "sim" diante de quem amamos.
+      Depois de muitas histórias, chegou a hora do nosso próximo passo juntos.
+      Criamos este espaço para compartilhar um pouco do nosso grande dia com você.
     </p>
     <p class="corpo" style="margin-top:1.5rem">
-      Sua presença é o presente mais bonito que poderíamos receber. Explore as próximas seções
-      para saber tudo sobre o grande dia.
+      Confirme sua presença e escolha um presente em nossa lista.
+      Estamos ansiosos para celebrarmos juntos.
     </p>
   </div>
 </section>
@@ -599,18 +636,18 @@
     <h2 class="titulo-secao">A cerimônia &amp; <em>a festa</em></h2>
     <div class="local-wrap">
       <div>
-        <h3 style="font-family:var(--serif);font-size:1.8rem;color:var(--folha);margin-bottom:0.6rem">Espaço Jardim das Acácias</h3>
+        <h3 style="font-family:var(--serif);font-size:1.8rem;color:var(--folha);margin-bottom:0.6rem">Espaço Garden</h3>
         <p class="corpo" style="margin-bottom:1rem">
-          Um refúgio verde à beira da cidade, cercado de árvores centenárias e luz dourada
-          ao entardecer. Cerimônia e recepção no mesmo local.
+          A cerimônia começará pontualmente às 16h e será no mesmo local da festa.
+          Pedimos, com carinho, que cheguem no horário (ou até um pouquinho antes)
+          para não perderem nenhum momento especial.
         </p>
-        <p style="font-size:0.95rem;color:var(--musgo);margin-bottom:0.3rem"><strong style="font-weight:500">Endereço:</strong> Estrada das Acácias, 1200 — Rio de Janeiro, RJ</p>
-        <p style="font-size:0.95rem;color:var(--musgo);margin-bottom:1.5rem"><strong style="font-weight:500">Horário:</strong> Cerimônia às 16h · Recepção a seguir</p>
-        <a class="btn" href="https://maps.google.com" target="_blank" rel="noopener">Abrir no mapa</a>
+        <p style="font-size:0.95rem;color:var(--musgo);margin-bottom:1.5rem"><strong style="font-weight:500">Endereço:</strong> Estr. Caetano Monteiro, 4036 — Pendotiba, Niterói - RJ, 24320-570</p>
+        <a class="btn" href="https://www.google.com/maps/search/?api=1&query=Espa%C3%A7o+Garden+Estr.+Caetano+Monteiro+4036+Pendotiba+Niter%C3%B3i" target="_blank" rel="noopener">Abrir no mapa</a>
       </div>
       <div class="mapa-moldura">
         <iframe
-          src="https://www.google.com/maps?q=Rio+de+Janeiro&output=embed"
+          src="https://www.google.com/maps?q=Estr.+Caetano+Monteiro,+4036+-+Pendotiba,+Niter%C3%B3i+-+RJ,+24320-570&output=embed"
           loading="lazy" title="Mapa do local"></iframe>
       </div>
     </div>
@@ -620,34 +657,27 @@
 <!-- ============ TRAJES / CORES ============ -->
 <section class="secao" id="trajes">
   <div class="container revelar">
-    <span class="eyebrow">para combinar com o jardim</span>
-    <h2 class="titulo-secao">Trajes &amp; <em>paleta</em></h2>
+    <span class="eyebrow">para celebrar com estilo</span>
+    <h2 class="titulo-secao">Trajes: <em>esporte fino</em></h2>
     <div class="cartoes">
       <div class="cartao">
         <h3>Convidados</h3>
-        <p>Traje social completo. Sinta-se à vontade para trazer cores suaves que conversem com o verde do jardim.</p>
+        <p>
+          Nosso casamento será ao ar livre. Sugerimos traje esporte fino —
+          escolha um look elegante que combine com o clima e o momento especial.
+        </p>
       </div>
       <div class="cartao">
-        <h3>Padrinhos &amp; Madrinhas</h3>
-        <p>Pedimos que sigam a paleta abaixo, escolhida com carinho para harmonizar com a decoração.</p>
-        <div class="paleta-cores">
-          <div>
-            <div class="amostra" style="background:#6E8062"></div>
-            <div class="amostra-legenda">Verde sálvia</div>
-          </div>
-          <div>
-            <div class="amostra" style="background:#47543D"></div>
-            <div class="amostra-legenda">Verde musgo</div>
-          </div>
-          <div>
-            <div class="amostra" style="background:#B79A5E"></div>
-            <div class="amostra-legenda">Dourado</div>
-          </div>
-          <div>
-            <div class="amostra" style="background:#EFEBDD"></div>
-            <div class="amostra-legenda">Areia</div>
-          </div>
-        </div>
+        <h3>Com carinho, pedimos</h3>
+        <p>
+          Para os padrinhos e madrinhas, seguimos uma paleta especial para deixar
+          tudo ainda mais harmonioso. Por isso, pedimos que os convidados evitem
+          <strong style="font-weight:500">terno preto</strong> e
+          <strong style="font-weight:500">vestidos em verde escuro</strong>.
+        </p>
+        <p style="margin-top:1rem;font-family:var(--serif);font-style:italic;font-size:1.15rem;color:var(--folha)">
+          O branco é reservado exclusivamente à noiva.
+        </p>
       </div>
     </div>
   </div>
@@ -663,28 +693,28 @@
         <span class="info-num">i</span>
         <div class="info-txt">
           <h4>Confirme sua presença</h4>
-          <p style="color:var(--folha-clara)">Pedimos que confirme até 30 dias antes do casamento, para organizarmos tudo com carinho.</p>
+          <p style="color:var(--folha-clara)">Pedimos que confirme sua presença pelo site, para organizarmos tudo com carinho.</p>
         </div>
       </li>
       <li>
         <span class="info-num">ii</span>
         <div class="info-txt">
-          <h4>Chegue com antecedência</h4>
-          <p style="color:var(--folha-clara)">A cerimônia começa pontualmente às 16h. Recomendamos chegar 30 minutos antes.</p>
+          <h4>Chegue no horário</h4>
+          <p style="color:var(--folha-clara)">A cerimônia começa pontualmente às 16h. Chegue no horário (ou um pouquinho antes) para não perder nenhum momento.</p>
         </div>
       </li>
       <li>
         <span class="info-num">iii</span>
         <div class="info-txt">
-          <h4>Estacionamento</h4>
-          <p style="color:var(--folha-clara)">O local conta com estacionamento gratuito. Também é fácil chegar por aplicativo de transporte.</p>
+          <h4>Celular durante a cerimônia</h4>
+          <p style="color:var(--folha-clara)">Pedimos que evitem o uso excessivo do celular durante a cerimônia — teremos um story maker registrando tudo para vocês.</p>
         </div>
       </li>
       <li>
         <span class="info-num">iv</span>
         <div class="info-txt">
-          <h4>Sobre as crianças</h4>
-          <p style="color:var(--folha-clara)">Amamos os pequenos, mas escolhemos uma celebração só para adultos. Contamos com a compreensão de vocês.</p>
+          <h4>Como chegar</h4>
+          <p style="color:var(--folha-clara)">O local conta com estacionamento gratuito. Também é fácil chegar por aplicativo de transporte.</p>
         </div>
       </li>
     </ul>
@@ -693,9 +723,6 @@
 
 <!-- ============ PRESENTES / iCASEI ============ -->
 <section class="secao presentes" id="presentes">
-  <svg class="folhagem" style="top:20px;left:-30px;width:160px;opacity:0.3" viewBox="0 0 200 200">
-    <path d="M100 190 C100 130 130 90 175 70 C135 95 108 135 100 190Z" fill="#6E8062"/>
-  </svg>
   <div class="container revelar">
     <span class="eyebrow">se quiser nos presentear</span>
     <h2 class="titulo-secao">Lista de <em>presentes</em></h2>
@@ -747,12 +774,12 @@
       <div style="text-align:center">
         <button type="submit" class="btn btn-preenchido">Confirmar presença</button>
       </div>
-    <div class="form-msg" id="msgRsvp">Sua confirmação foi registrada com carinho ✦</div>
+      <div class="form-msg" id="msgRsvp">Sua confirmação foi registrada com carinho ✦</div>
     </form>
   </div>
 </section>
 
-<!-- MODAL: convite pra lista de presentes -->
+<!-- ============ MODAL: convite pra lista de presentes ============ -->
 <div class="modal-fundo" id="modalPresente">
   <div class="modal-caixa">
     <button class="modal-fechar" id="modalFechar" aria-label="Fechar">&times;</button>
@@ -833,14 +860,12 @@
 
   /* ============================================================
      CONEXÃO COM O SUPABASE
-     ------------------------------------------------------------
-     👉 COLE AQUI AS DUAS CHAVINHAS QUE O SUPABASE VAI TE DAR.
-        Troque o texto entre aspas, mantendo as aspas.
+     Chavinhas do projeto (a publishable pode ser exposta com segurança).
      ============================================================ */
   const SUPABASE_URL = 'https://gqnfwaigkufsmmmmmooc.supabase.co';
   const SUPABASE_CHAVE = 'sb_publishable_Zr85KOUxRBPKN_8R_BfgsQ_sPOtr7xE';
 
-// Detecta se as chavinhas ainda não foram configuradas
+  // Detecta se as chavinhas ainda não foram configuradas
   const SUPABASE_CONFIGURADO =
     !SUPABASE_URL.startsWith('COLE_AQUI') && !SUPABASE_CHAVE.startsWith('COLE_AQUI');
 
@@ -861,7 +886,7 @@
   document.getElementById('formRsvp').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!SUPABASE_CONFIGURADO) {
-      alert('O site ainda está sendo configurado. Em breve as confirmações estarão funcionando! 🌿');
+      alert('O site ainda está sendo configurado. Em breve as confirmações estarão funcionando!');
       return;
     }
     const botao = e.target.querySelector('button[type="submit"]');
@@ -898,14 +923,16 @@
   function fecharModal() { modal.classList.remove('aberto'); }
   document.getElementById('modalFechar').addEventListener('click', fecharModal);
   document.getElementById('modalDepois').addEventListener('click', fecharModal);
+  // Fecha ao clicar no fundo escurecido (fora da caixa)
   modal.addEventListener('click', (e) => { if (e.target === modal) fecharModal(); });
+  // Fecha com a tecla ESC
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') fecharModal(); });
 
   // ----- Recados: salva o recado e mostra no mural -----
   document.getElementById('formRecado').addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!SUPABASE_CONFIGURADO) {
-      alert('O site ainda está sendo configurado. Em breve o mural estará funcionando! 🌿');
+      alert('O site ainda está sendo configurado. Em breve o mural estará funcionando!');
       return;
     }
     const botao = e.target.querySelector('button[type="submit"]');
@@ -937,12 +964,19 @@
     cartao.className = 'recado-cartao';
     cartao.dataset.id = recado.id;
 
-    const botaoOcultar = MODO_ADMIN
-      ? '<button class="ocultar" title="Ocultar este recado">ocultar</button>'
-      : '';
+    // No modo admin, o botão alterna conforme o recado esteja visível ou oculto
+    let botaoAdmin = '';
+    if (MODO_ADMIN) {
+      if (recado.visivel === false) {
+        cartao.classList.add('recado-oculto');
+        botaoAdmin = '<button class="alternar" data-estado="oculto" title="Trazer de volta ao mural">reexibir</button>';
+      } else {
+        botaoAdmin = '<button class="alternar" data-estado="visivel" title="Ocultar do mural">ocultar</button>';
+      }
+    }
 
     cartao.innerHTML = `
-      ${botaoOcultar}
+      ${botaoAdmin}
       <div class="aspas">"</div>
       <p class="texto"></p>
       <p class="autor"></p>`;
@@ -987,17 +1021,36 @@
     data.forEach(recado => adicionarRecadoNoMural(recado, false));
   }
 
-  // ----- Ocultar recado (só no modo admin) -----
+  // ----- Ocultar / Reexibir recado (só no modo admin) -----
   document.getElementById('mural').addEventListener('click', async (e) => {
-    if (!e.target.classList.contains('ocultar')) return;
-    const cartao = e.target.closest('.recado-cartao');
+    if (!e.target.classList.contains('alternar')) return;
+    const botao = e.target;
+    const cartao = botao.closest('.recado-cartao');
     const id = cartao.dataset.id;
+    const estadoAtual = botao.dataset.estado;
 
-    const { error } = await sb.from('recados').update({ visivel: false }).eq('id', id);
-    if (error) { alert('Não consegui ocultar agora, tente de novo.'); console.error(error); return; }
+    // Se está visível, vamos ocultar. Se está oculto, vamos reexibir.
+    const novoVisivel = (estadoAtual === 'oculto');
 
-    cartao.style.opacity = '0.4';
-    e.target.textContent = 'ocultado';
+    botao.disabled = true;
+    const { error } = await sb.from('recados').update({ visivel: novoVisivel }).eq('id', id);
+    botao.disabled = false;
+
+    if (error) { alert('Não consegui alterar agora, tente de novo.'); console.error(error); return; }
+
+    if (novoVisivel) {
+      // Reexibido: volta ao normal
+      cartao.classList.remove('recado-oculto');
+      botao.dataset.estado = 'visivel';
+      botao.textContent = 'ocultar';
+      botao.title = 'Ocultar do mural';
+    } else {
+      // Ocultado: fica apagadinho
+      cartao.classList.add('recado-oculto');
+      botao.dataset.estado = 'oculto';
+      botao.textContent = 'reexibir';
+      botao.title = 'Trazer de volta ao mural';
+    }
   });
 
   // Carrega os recados assim que a página abre
